@@ -275,6 +275,32 @@ class CellsSchedulerTestCase(test.TestCase):
 
         self.assertEqual(8, call_info['num_tries'])
         self.assertEqual(self.instance_uuids, call_info['errored_uuids'])
+                                                                                                                                                      
+    def test_build_instances_numa_topology_not_none(self):
+        self.build_inst_kwargs['instances'][0].numa_topology = 
+            objects.InstanceNUMATopology()
+        self.build_inst_kwargs['instances'][0].numa_topology.cells = 
+            [objects.InstanceNUMACell(cpu_pinning_raw=None,cpu_topology=None,
+            cpuset=set([0]),id=0,memory=64,pagesize=None)]
+        instance_topology = objects.InstanceNUMATopology()
+        instance_topology.cells = [objects.InstanceNUMACell(cpu_pinning_raw=None,
+            cpu_topology=None,cpuset=set([0]),id=0,memory=64,pagesize=None)] 
+      
+        self.msg_runner.build_instances(self.ctxt, self.my_cell_state, 
+        self.build_inst_kwargs)
+      
+        self.assertEqual(instance_topology.cells[0]['cpu_pinning_raw'], 
+            self.build_inst_kwargs['instances'][0].numa_topology.cells[0]['cpu_pinning_raw']) 
+        self.assertEqual(instance_topology.cells[0]['cpu_topology'], 
+            self.build_inst_kwargs['instances'][0].numa_topology.cells[0]['cpu_topology']) 
+        self.assertEqual(instance_topology.cells[0]['cpuset'], 
+            self.build_inst_kwargs['instances'][0].numa_topology.cells[0]['cpuset']) 
+        self.assertEqual(instance_topology.cells[0]['id'], 
+            self.build_inst_kwargs['instances'][0].numa_topology.cells[0]['id']) 
+        self.assertEqual(instance_topology.cells[0]['memory'], 
+            self.build_inst_kwargs['instances'][0].numa_topology.cells[0]['memory']) 
+        self.assertEqual(instance_topology.cells[0]['pagesize'], 
+            self.build_inst_kwargs['instances'][0].numa_topology.cells[0]['pagesize']) 
 
     def test_schedule_method_on_random_exception(self):
         self.flags(scheduler_retries=7, group='cells')
