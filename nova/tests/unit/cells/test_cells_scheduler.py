@@ -112,7 +112,8 @@ class CellsSchedulerTestCase(test.TestCase):
                           'metadata': {'moo': 'cow'},
                           'system_metadata': {'meow': 'cat'},
                           'flavor': inst_type,
-                          'project_id': self.ctxt.project_id}
+                          'project_id': self.ctxt.project_id,
+                          'numa_topology': None}
 
         call_info = {'uuids': []}
         block_device_mapping = [
